@@ -14,7 +14,7 @@ class TripService
      * @var UserSession
      */
     private $userSession;
-    
+
     /**
      * @var TripDAO
      */
@@ -28,22 +28,27 @@ class TripService
         $this->tripDAO = $tripDAO;
     }
 
-    public function getTripsByUser(User $user) {
-        $tripList = array();
+    public function getTripsByUser(User $user)
+    {
         $loggedUser = $this->userSession->getLoggedUser();
+        $this->validateLoggedUser($loggedUser);
+        $tripList = array();
         $isFriend = false;
-        if ($loggedUser != null) {
-            foreach ($user->getFriends() as $friend) {
-                if ($friend == $loggedUser) {
-                    $isFriend = true;
-                    break;
-                }
+
+        foreach ($user->getFriends() as $friend) {
+            if ($friend == $loggedUser) {
+                $isFriend = true;
+                break;
             }
-            if ($isFriend) {
-                $tripList = $this->tripDAO->findTripsByUser($user);
-            }
-            return $tripList;
-        } else {
+        }
+        if ($isFriend) {
+            $tripList = $this->tripDAO->findTripsByUser($user);
+        }
+        return $tripList;
+    }
+
+    public function validateLoggedUser($user) {
+        if ($user == null) {
             throw new UserNotLoggedInException();
         }
     }
