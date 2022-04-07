@@ -7,7 +7,7 @@ use TripServiceKata\Trip\TripService;
 use TripServiceKata\Exception\UserNotLoggedInException;
 use TripServiceKata\User\User;
 use TripServiceKata\User\UserSession;
-
+use TripServiceKata\Trip\TripDAO;
 class TripServiceTest extends TestCase
 {
     /**
@@ -17,7 +17,9 @@ class TripServiceTest extends TestCase
 
     protected function setUp()
     {
-        $this->tripService = new TripService;
+        $userSession = new UserSession();
+        $tripDAO = new TripDAO();
+        $this->tripService = new TripService($userSession,$tripDAO);
     }
 
     /** @test */
@@ -44,4 +46,22 @@ class TripServiceTest extends TestCase
         $tripList = $this->tripService->getTripsByUser($user);
         $this->assertNotCount(0,$tripList);
     }
+
+
+    // /** @test */
+    // public function should_Return_Trips_When_Logged_User_Are_Friend_with_DI_tool()
+    // {
+    //     $this->fail('This test has not been implemented yet.');
+    // }
+
+    // public function createNotLoggedInUser(): void
+    // {
+    //     $mockCCP = $this->getMockBuilder(UserSession::class)
+    //         ->setMethods(['chargeCreditCard'])
+    //         ->getMock();
+
+    //     $mockCCP
+    //         ->method('chargeCreditCard')
+    //         ->willReturn(true);
+    // }
 }

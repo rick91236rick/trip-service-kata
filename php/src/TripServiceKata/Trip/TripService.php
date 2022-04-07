@@ -5,12 +5,32 @@ namespace TripServiceKata\Trip;
 use TripServiceKata\User\User;
 use TripServiceKata\User\UserSession;
 use TripServiceKata\Exception\UserNotLoggedInException;
+use TripServiceKata\Trip\TripDAO;
 
 class TripService
 {
+
+    /**
+     * @var UserSession
+     */
+    private $userSession;
+    
+    /**
+     * @var TripDAO
+     */
+    private $tripDAO;
+
+    public function __construct(
+        UserSession $userSession,
+        TripDAO $tripDAO
+    ) {
+        $this->userSession = $userSession;
+        $this->tripDAO = $tripDAO;
+    }
+
     public function getTripsByUser(User $user) {
         $tripList = array();
-        $loggedUser = UserSession::getInstance()->getLoggedUser();
+        $loggedUser = $this->userSession->getInstance()->getLoggedUser();
         $isFriend = false;
         if ($loggedUser != null) {
             foreach ($user->getFriends() as $friend) {
@@ -20,7 +40,7 @@ class TripService
                 }
             }
             if ($isFriend) {
-                $tripList = TripDAO::findTripsByUser($user);
+                $tripList = $this->tripDAO->findTripsByUser($user);
             }
             return $tripList;
         } else {
