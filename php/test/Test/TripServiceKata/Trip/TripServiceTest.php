@@ -43,7 +43,7 @@ class TripServiceTest extends TestCase
     public function should_Not_Return_Trips_When_Logged_User_Are_Not_Friend()
     {
         $this->mockUserSession->method('getLoggedUser')->willReturn($this->mockUser);
-        $this->mockUser->method('getFriends')->willReturn([]);
+        $this->mockUser->method('isFriend')->willReturn(false);
 
         $tripList = $this->tripService->getTripsByUser($this->mockUser);
         $this->assertCount(0, $tripList);
@@ -54,7 +54,7 @@ class TripServiceTest extends TestCase
     public function should_Return_Trips_When_Logged_User_Are_Friend()
     {
         $this->mockUserSession->method('getLoggedUser')->willReturn($this->mockUser);
-        $this->mockUser->method('getFriends')->willReturn([$this->mockUser]);
+        $this->mockUser->method('isFriend')->willReturn(true);
         $this->mockTripDAO->method('findTripsByUser')->willReturn(["trip"]);
 
         $tripList = $this->tripService->getTripsByUser($this->mockUser);

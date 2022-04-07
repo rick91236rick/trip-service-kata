@@ -32,19 +32,8 @@ class TripService
     {
         $loggedUser = $this->userSession->getLoggedUser();
         $this->validateLoggedUser($loggedUser);
-        $tripList = array();
-        $isFriend = false;
 
-        foreach ($user->getFriends() as $friend) {
-            if ($friend == $loggedUser) {
-                $isFriend = true;
-                break;
-            }
-        }
-        if ($isFriend) {
-            $tripList = $this->tripDAO->findTripsByUser($user);
-        }
-        return $tripList;
+        return $user->isFriend($loggedUser) ? $this->tripDAO->findTripsByUser($user) : [];
     }
 
     public function validateLoggedUser($user) {
